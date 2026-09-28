@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Python operators: 20 coding problems for first-year students</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script>
+try{var s=JSON.parse(localStorage.getItem('operator-lab-v1')||'{}');var t=s.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='light';}
+</script>
+<style>
+:root{
+  --sans:'Bricolage Grotesque','Segoe UI',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;
+  --paper:#EAF0F3; --grid:#D3DEE4; --surface:#F8FBFC; --surface-2:#FFFFFF;
+  --ink:#172341; --muted:#52627F; --line:#C3D0D8; --focus:#2F6BFF;
+  --hl-soft:rgba(255,214,10,.28);
+  --int:#2F6BFF; --float:#0EA5A0; --str:#E39B0B; --bool:#D6336C; --none:#6B7280;
+  --int-ink:#1F4FCC; --float-ink:#0B7C78; --str-ink:#8A5A00; --bool-ink:#B01F55; --none-ink:#4B5563;
+  --ok:#0F7A54; --ok-ink:#FFFFFF; --bad:#B3261E; --bad-ink:#FFFFFF;
+  --code-bg:#101A33; --code-fg:#E6ECF8;
+}
+[data-theme="dark"]{
+  --paper:#0E1528; --grid:#18233D; --surface:#141E36; --surface-2:#1A2647;
+  --ink:#E8EEFB; --muted:#9BA9C7; --line:#2A3859; --focus:#8FB0FF;
+  --hl-soft:rgba(255,214,10,.14);
+  --int:#5B8CFF; --float:#22C7C0; --str:#F2B233; --bool:#F0508A; --none:#8B93A3;
+  --int-ink:#8FB0FF; --float-ink:#4FDDD6; --str-ink:#FFC65C; --bool-ink:#FF8DB4; --none-ink:#B4BDCC;
+  --ok:#2BC48A; --ok-ink:#04231A; --bad:#FF7B6B; --bad-ink:#3A0A05;
+  --code-bg:#0A1123;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{
+  margin:0;font-family:var(--sans);font-size:16px;line-height:1.55;color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px;-webkit-font-smoothing:antialiased;
+}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+code{font-family:var(--mono);font-size:.9em;background:color-mix(in srgb,var(--ink) 9%,transparent);padding:.05em .38em;border-radius:5px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+.tbadge{font:600 .72rem/1.5 var(--mono);padding:0 9px;border-radius:999px;color:var(--ci);
+  background:color-mix(in srgb,var(--c) 16%,transparent);border:1px solid color-mix(in srgb,var(--c) 55%,transparent);justify-self:start;width:max-content}
+
+/* buttons */
+.btn{font:600 .9rem/1.2 var(--sans);padding:.6rem 1.05rem;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:transform .15s,background .2s,color .2s}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn:active{transform:scale(.96)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{filter:brightness(1.18)}
+.btn.sm{padding:.4rem .8rem;font-size:.82rem}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn:disabled:hover{background:transparent;color:var(--ink)}
+.btn.primary:disabled:hover{background:var(--ink);color:var(--paper)}
+.btn[aria-expanded="true"]{background:color-mix(in srgb,var(--ink) 12%,transparent)}
+.btn[aria-expanded="true"]:hover{background:var(--ink);color:var(--paper)}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.15rem;letter-spacing:-.01em}
+.top-right{display:flex;align-items:center;gap:12px}
+.xp{font:600 .9rem var(--mono);padding:.35rem .8rem;border:1.5px solid var(--ink);border-radius:999px;background:var(--surface)}
+.iconbtn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--ink);background:transparent;color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:transform .25s,background .2s,color .2s}
+.iconbtn:hover{background:var(--ink);color:var(--paper);transform:rotate(18deg)}
+[data-theme="dark"] .i-moon,[data-theme="light"] .i-sun{display:none}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:44px;align-items:center;padding:56px 0 44px}
+h1{font-size:clamp(2.2rem,5.2vw,4rem);line-height:1.02;letter-spacing:-.03em;font-weight:700;margin:0 0 18px;max-width:14em}
+.lede{font-size:1.1rem;max-width:52ch;margin:0 0 24px;color:var(--muted)}
+.lede code{color:var(--ink)}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:26px}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.88rem;color:var(--muted)}
+.stage{background:var(--surface);border:1.5px solid var(--ink);border-radius:16px;padding:22px 22px 18px;display:grid;gap:16px;align-content:start;min-height:330px}
+.stage-q{margin:0;font-weight:600;font-size:1.05rem}
+.expr{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px;padding:22px 0 8px;min-height:150px}
+.tc{--c:var(--none);--ci:var(--none-ink);min-width:96px;padding:14px 18px 12px;border:2.5px solid var(--c);border-radius:10px;background:color-mix(in srgb,var(--c) 10%,var(--surface-2));display:grid;justify-items:center;gap:8px}
+.tc .tv{font:600 clamp(1.4rem,4vw,2.1rem)/1 var(--mono);color:var(--ink)}
+.tc .tbadge{justify-self:center}
+.opx,.eqx{font:600 clamp(1.6rem,4vw,2.3rem)/1 var(--mono);color:var(--ink);min-width:1.4ch;text-align:center}
+.expr>*{opacity:0;transition:opacity .45s ease,transform .6s cubic-bezier(.2,.9,.3,1.25)}
+.expr .ea{transform:translateX(-34px)}
+.expr .eb{transform:translateX(34px)}
+.expr .opx{transform:scale(.3) rotate(-30deg)}
+.expr .eqx,.expr .er{transform:scale(.55)}
+.s-in .expr .ea,.s-in .expr .eb,.s-in .expr .opx{opacity:1;transform:none}
+.s-res .expr .eqx,.s-res .expr .er{opacity:1;transform:none}
+.s-op .opx{animation:opPulse .7s ease}
+.s-res .er{animation:resGlow 1.2s ease-out}
+.s-res .er .tbadge{animation:badgePop .8s .25s}
+.stage-note{margin:0;min-height:3em;text-align:center;color:var(--muted);opacity:0;transition:opacity .5s .2s}
+.s-res .stage-note{opacity:1}
+.stage .btn{justify-self:center}
+@keyframes opPulse{0%{transform:scale(1)}40%{transform:scale(1.6)}100%{transform:scale(1)}}
+@keyframes resGlow{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 55%,transparent)}100%{box-shadow:0 0 0 24px transparent}}
+@keyframes badgePop{0%{transform:scale(1)}40%{transform:scale(1.4)}100%{transform:scale(1)}}
+
+/* layout */
+.layout{display:grid;grid-template-columns:288px minmax(0,1fr);gap:28px;align-items:start;padding-bottom:80px}
+.side{position:sticky;top:82px;display:grid;gap:14px;max-height:calc(100vh - 100px);overflow:auto;padding:2px}
+.panelbox{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.ring{position:relative;width:132px;height:132px;margin:0 auto 14px}
+.ring svg{transform:rotate(-90deg);display:block}
+.ring .trk{stroke:var(--line)}
+.ring .bar{stroke:var(--float);stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.3,.8,.3,1)}
+.ring .num{position:absolute;inset:0;display:grid;place-items:center;font-weight:700;font-size:1.9rem;letter-spacing:-.03em}
+.ring .num small{font-size:.9rem;font-weight:500;color:var(--muted)}
+.lvrow{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;font-size:.86rem;margin-top:6px}
+.lvrow .trackbar{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.lvrow .trackbar i{display:block;height:100%;background:var(--ink);border-radius:99px;transition:width .6s cubic-bezier(.3,.8,.3,1)}
+.lvrow b{font-family:var(--mono);font-weight:600}
+.fl{display:block;margin:0 0 6px;font-weight:600;font-size:.86rem}
+.panelbox .fl:not(:first-child){margin-top:14px}
+input[type="search"]{width:100%;font:inherit;font-size:.92rem;padding:.55rem .8rem;border-radius:8px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink)}
+input[type="search"]:focus{border-color:var(--focus)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 .82rem var(--sans);padding:.32rem .7rem;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .12s}
+.chip:hover{border-color:var(--ink)}
+.chip:active{transform:scale(.95)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.check{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:.88rem;cursor:pointer}
+.check input{width:17px;height:17px;accent-color:var(--float)}
+.ref summary{cursor:pointer;font-weight:600;font-size:.9rem}
+.ref ol{margin:10px 0 0;padding-left:1.3rem;font-size:.86rem;display:grid;gap:4px}
+.ref p{margin:8px 0 0;font-size:.82rem;color:var(--muted)}
+.linkbtn{background:none;border:0;padding:4px;font:500 .84rem var(--sans);color:var(--muted);text-decoration:underline;cursor:pointer;justify-self:start}
+.linkbtn:hover{color:var(--ink)}
+
+/* question sheet */
+.sheethead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 12px}
+.sheethead h2{margin:0;font-size:1.5rem;letter-spacing:-.02em}
+#count{font-size:.9rem;color:var(--muted)}
+.sheet{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1.5px solid var(--ink);border-radius:14px;overflow:hidden}
+.q{display:grid;grid-template-columns:76px minmax(0,1fr);column-gap:8px;padding:28px 28px 30px 20px;background:var(--surface)}
+.q.enter{animation:rise .5s cubic-bezier(.2,.8,.3,1) both;animation-delay:calc(var(--d,0) * 45ms)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.gutter{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.qn{font-size:2.5rem;font-weight:700;line-height:1;letter-spacing:-.04em;color:var(--muted);transition:color .3s}
+.tick{display:none;width:24px;height:24px;border-radius:50%;background:var(--ok);color:var(--ok-ink);place-items:center}
+.q.solved .tick{display:grid;animation:tickIn .5s cubic-bezier(.2,.9,.3,1.4)}
+.q.solved .qn{color:var(--ok)}
+@keyframes tickIn{from{transform:scale(0) rotate(-90deg)}to{transform:none}}
+.qhead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px}
+.qhead h3{margin:0;font-size:1.4rem;line-height:1.2;letter-spacing:-.015em;font-weight:650}
+.meta{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:600}
+.lvl{display:inline-flex;align-items:flex-end;gap:3px;height:16px}
+.lvl i{width:6px;border-radius:2px;background:var(--line)}
+.lvl i:nth-child(1){height:6px}.lvl i:nth-child(2){height:11px}.lvl i:nth-child(3){height:16px}
+.lv-easy i:nth-child(-n+1),.lv-medium i:nth-child(-n+2),.lv-hard i{background:var(--ink)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px;align-items:center}
+.tag{font-size:.78rem;font-weight:600;padding:.12rem .6rem;border:1.5px solid var(--ink);border-radius:999px}
+.use{font-size:.76rem}
+.stmt{margin:0 0 14px;max-width:70ch}
+.io{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.io figure{margin:0;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);overflow:hidden;min-width:0}
+.io figcaption{font-size:.76rem;font-weight:600;color:var(--muted);padding:5px 12px;border-bottom:1px solid var(--line)}
+.io pre{margin:0;padding:10px 12px;font:.84rem/1.6 var(--mono);overflow-x:auto}
+.io pre.none{color:var(--muted);font-family:var(--sans);font-style:italic}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px}
+.xpnote{font:600 .78rem var(--mono);color:var(--muted)}
+.btn.solve[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:var(--ok-ink)}
+.panel{display:grid;grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .4s cubic-bezier(.3,.8,.3,1),visibility 0s .4s}
+.panel.open{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows .4s cubic-bezier(.3,.8,.3,1)}
+.panel>.inner{overflow:hidden;min-height:0}
+.pad{padding-top:14px}
+.hintbox{padding:12px 16px;border-left:4px solid #F5C400;background:var(--hl-soft);border-radius:0 8px 8px 0;max-width:70ch}
+
+/* workarea */
+.work{background:var(--code-bg);border-radius:10px;overflow:hidden;color:var(--code-fg)}
+.worktop{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 12px;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.08);font:.78rem var(--mono);color:#8E9CBB}
+.savestate.flash{animation:slidein .35s ease-out;color:#8CF0B6}
+.editor{display:flex;font:14px/24px var(--mono);transition:box-shadow .2s}
+.editor:focus-within{box-shadow:inset 0 0 0 2px rgba(255,214,10,.45)}
+.lnums{flex:0 0 52px;padding:12px 14px 12px 0;text-align:right;color:#5F6E8F;user-select:none;white-space:pre;border-right:1px solid rgba(255,255,255,.07);font:inherit}
+.stack{position:relative;flex:1;min-width:0}
+.hl{position:absolute;top:0;left:0;right:0;margin:0;padding:12px 16px;font:inherit;white-space:pre;overflow:hidden;pointer-events:none}
+.hl code{font:inherit;background:none;padding:0;color:inherit;border-radius:0}
+.tk-kw{color:#C9A7FF}.tk-bi{color:#6FD3FF}.tk-st{color:#FFD98A}.tk-nm{color:#8CF0B6}.tk-cm{color:#7C8BAA}.tk-op{color:#FF9DBB}.tk-id{color:#E6ECF8}.tk-pn{color:#A9B6D3}
+.ta{display:block;position:relative;width:100%;margin:0;padding:12px 16px;border:0;border-radius:0;background:transparent;color:transparent;caret-color:#FFD60A;font:inherit;white-space:pre;overflow-x:auto;overflow-y:hidden;resize:none;outline:none;tab-size:4;-moz-tab-size:4;scrollbar-width:none}
+.ta::-webkit-scrollbar{display:none}
+.ta::placeholder{color:#5F6E8F;opacity:1}
+.ta::selection{background:rgba(120,160,255,.4)}
+.workbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 16px;padding:10px 14px;border-top:1px solid rgba(255,255,255,.08)}
+.checks{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.78rem;color:#8E9CBB}
+.ck{display:inline-flex;align-items:center;gap:6px;font:600 .76rem var(--mono);padding:.16rem .65rem .16rem .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.2);color:#8E9CBB;transition:color .25s,border-color .25s,background .25s}
+.ck i{width:11px;height:11px;border-radius:50%;border:1.5px solid currentColor;display:inline-block;transition:background .25s}
+.ck.on{color:#8CF0B6;border-color:#8CF0B6;background:rgba(140,240,182,.1);animation:pop .5s}
+.ck.on i{background:#8CF0B6}
+.workbtns{display:flex;flex-wrap:wrap;gap:8px}
+.mini{font:600 .76rem var(--sans);padding:.28rem .75rem;border-radius:6px;border:1px solid rgba(255,255,255,.22);background:transparent;color:#C9D4EC;cursor:pointer;transition:background .2s}
+.mini:hover{background:rgba(255,255,255,.12)}
+.workhelp{padding:8px 14px;border-top:1px solid rgba(255,255,255,.08);font-size:.78rem;color:#8E9CBB}
+.q.draft [data-act="work"]::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--float)}
+@keyframes slidein{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+
+/* type colours (declared late so they override the crate defaults) */
+.t-int{--c:var(--int);--ci:var(--int-ink)}
+.t-float{--c:var(--float);--ci:var(--float-ink)}
+.t-str{--c:var(--str);--ci:var(--str-ink)}
+.t-bool{--c:var(--bool);--ci:var(--bool-ink)}
+.t-NoneType,.t-obj{--c:var(--none);--ci:var(--none-ink)}
+
+/* answers (locked until every question is solved) */
+.ansstatus{margin:0 0 14px;padding:10px 16px;border:1.5px dashed var(--line);border-radius:10px;font-size:.92rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;transition:border-color .3s,color .3s}
+.ansstatus.unlocked{border-style:solid;border-color:var(--ok);color:var(--ok);font-weight:600}
+.ansstatus b{font-family:var(--mono);color:var(--ink)}
+.ansstatus.unlocked b{color:var(--ok)}
+.btn.ans{position:relative}
+.btn.ans[disabled]::after{content:'\1F512';font-size:.8em;margin-left:2px}
+.ansbox{background:var(--code-bg);color:var(--code-fg);border-radius:10px;overflow:hidden}
+.ansbar{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;border-bottom:1px solid rgba(255,255,255,.08);font:.78rem var(--mono);color:#8E9CBB}
+.anscode{margin:0;padding:12px 14px;overflow-x:auto;font:13.5px/1.75 var(--mono);white-space:pre}
+.ansnote{margin:10px 0 0;font-size:.86rem;color:var(--muted);max-width:70ch}
+
+/* quiz */
+
+.qq{margin:0 0 12px;font-weight:600;max-width:70ch}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;max-width:760px}
+.opt{font:600 .95rem var(--mono);padding:.7rem 1rem;border:1.5px solid var(--ink);border-radius:8px;background:var(--surface-2);color:var(--ink);cursor:pointer;text-align:left;transition:transform .15s,background .2s,opacity .2s}
+.opt:hover:not(:disabled){transform:translateY(-2px);background:color-mix(in srgb,var(--ink) 8%,var(--surface-2))}
+.opt:disabled{cursor:default;opacity:.55}
+.opt.right{background:var(--ok);border-color:var(--ok);color:var(--ok-ink);opacity:1;animation:pop .5s}
+.opt.wrong{background:var(--bad);border-color:var(--bad);color:var(--bad-ink);opacity:1;animation:shake .45s}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.qfb{margin-top:12px;min-height:1.6em;max-width:70ch}
+.qfb .btn{margin-left:8px;vertical-align:middle}
+.empty{padding:40px 24px;text-align:center;background:var(--surface)}
+.empty p{margin:0 0 14px}
+
+.foot{padding:0 0 48px;color:var(--muted);font-size:.88rem}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:80}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);opacity:0;background:var(--ink);color:var(--paper);padding:.6rem 1.15rem;border-radius:999px;font-weight:600;font-size:.92rem;transition:opacity .3s,transform .3s;pointer-events:none;z-index:90;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:1040px){
+  .hero{grid-template-columns:1fr;gap:28px;padding-top:36px}
+  .layout{grid-template-columns:1fr}
+  .side{position:static;max-height:none;overflow:visible;grid-template-columns:1fr 1fr}
+  .side .ref,.side .linkbtn{grid-column:1/-1}
+}
+@media (max-width:720px){
+  .side{grid-template-columns:1fr}
+  .q{grid-template-columns:1fr;padding:22px 16px 24px}
+  .gutter{flex-direction:row;align-items:center;margin-bottom:6px}
+  .qn{font-size:1.8rem}
+  .io{grid-template-columns:1fr}
+  .wrap{padding:0 16px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="2" style="fill:var(--int)"/><rect x="13" y="2" width="9" height="9" rx="2" style="fill:var(--float)"/><rect x="2" y="13" width="9" height="9" rx="2" style="fill:var(--str)"/><rect x="13" y="13" width="9" height="9" rx="2" style="fill:var(--bool)"/></svg>
+      Operator lab
+    </div>
+    <div class="top-right">
+      <div class="xp" aria-live="polite"><span id="xpNum">0</span> XP</div>
+      <button class="iconbtn" id="themeBtn" aria-label="Switch between light and dark theme">
+        <svg class="i-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero" aria-labelledby="title">
+    <div>
+      <h1 id="title">Python operators, one problem at a time</h1>
+      <p class="lede">Twenty coding problems for first-year students. Each one also uses variables, data types, <code>input()</code>, type conversion and <code>type()</code>. Read the problem, write your code in the workarea, then compare your output with the sample.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#q1">Start with question 1</a>
+      </div>
+      <div class="legend" aria-label="Type colours used in the examples">
+        <span>Type colours</span>
+        <span class="tbadge t-int">int</span><span class="tbadge t-float">float</span><span class="tbadge t-str">str</span><span class="tbadge t-bool">bool</span>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <p class="stage-q">What type does the result have?</p>
+      <div class="expr">
+        <div class="tc ea"><span class="tv"></span><span class="tbadge"></span></div>
+        <div class="opx"></div>
+        <div class="tc eb"><span class="tv"></span><span class="tbadge"></span></div>
+        <div class="eqx">=</div>
+        <div class="tc er"><span class="tv"></span><span class="tbadge"></span></div>
+      </div>
+      <p class="stage-note" id="stageNote"></p>
+      <button class="btn sm" id="nextEx">Next example</button>
+    </div>
+  </section>
+
+  <div class="layout" id="questions">
+    <aside class="side" aria-label="Progress and filters">
+      <section class="panelbox">
+        <div class="ring">
+          <svg viewBox="0 0 100 100" width="132" height="132" aria-hidden="true">
+            <circle class="trk" cx="50" cy="50" r="42" fill="none" stroke-width="9"/>
+            <circle class="bar" id="ringBar" cx="50" cy="50" r="42" fill="none" stroke-width="9"/>
+          </svg>
+          <div class="num" id="ringNum" role="img" aria-label="Solved questions"><span>0<small>/20</small></span></div>
+        </div>
+        <div id="lvrows"></div>
+      </section>
+
+      <section class="panelbox">
+        <label class="fl" for="search">Search</label>
+        <input id="search" type="search" placeholder="Try: leap, swap, precedence" autocomplete="off">
+        <p class="fl">Level</p>
+        <div class="chips" id="levelChips">
+          <button class="chip" data-level="all" aria-pressed="true">All</button>
+          <button class="chip" data-level="easy" aria-pressed="false">Easy</button>
+          <button class="chip" data-level="medium" aria-pressed="false">Medium</button>
+          <button class="chip" data-level="hard" aria-pressed="false">Hard</button>
+        </div>
+        <p class="fl">Operator type</p>
+        <div class="chips" id="topicChips"></div>
+        <label class="check"><input type="checkbox" id="hideSolved"> Hide solved questions</label>
+      </section>
+
+      <details class="panelbox ref">
+        <summary>Precedence, highest first</summary>
+        <ol>
+          <li><code>( )</code> brackets</li>
+          <li><code>**</code> power</li>
+          <li><code>*</code> <code>/</code> <code>//</code> <code>%</code></li>
+          <li><code>+</code> <code>-</code></li>
+          <li><code>==</code> <code>!=</code> <code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code> <code>in</code> <code>not in</code></li>
+          <li><code>not</code></li>
+          <li><code>and</code></li>
+          <li><code>or</code></li>
+        </ol>
+        <p>Equal rank runs left to right. Assignment (<code>=</code>, <code>+=</code>) happens last.</p>
+      </details>
+
+      <button class="linkbtn" id="resetBtn">Reset progress</button>
+    </aside>
+
+    <section aria-labelledby="qtitle">
+      <div class="sheethead"><h2 id="qtitle">Questions</h2><span id="count"></span></div>
+      <p class="ansstatus" id="ansStatus" role="status" aria-live="polite"></p>
+      <div class="sheet" id="list"></div>
+      <div class="sheet empty" id="empty" hidden style="margin-top:12px">
+        <p>No questions match these filters.</p>
+        <button class="btn sm" id="clearFilters">Clear filters</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="wrap foot">Written for Python 3. Sample outputs assume the sample input shown on each question.</footer>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="data">
+/*DATA-START*/
+const QUESTIONS = [
+ {
+  "id": 1,
+  "level": "easy",
+  "title": "Sum and average",
+  "topics": [
+   "arithmetic"
+  ],
+  "uses": [
+   "input()",
+   "int()",
+   "type()"
+  ],
+  "statement": "Ask the user for two whole numbers. Print their sum and their average, then print the type of the average.",
+  "hint": "[[input()]] always returns a [[str]], so wrap it in [[int()]]. The average uses [[/]], which returns a [[float]].",
+  "sampleIn": "7\n8",
+  "sampleOut": "Sum: 15\nAverage: 7.5\nType of average: <class 'float'>",
+  "code": [
+   "a = int(input(\"Enter first number: \"))",
+   "b = int(input(\"Enter second number: \"))",
+   "total = a + b",
+   "average = total / 2",
+   "print(\"Sum:\", total)",
+   "print(\"Average:\", average)",
+   "print(\"Type of average:\", type(average))"
+  ]
+ },
+ {
+  "id": 2,
+  "level": "easy",
+  "title": "Swap two values",
+  "topics": [
+   "assignment"
+  ],
+  "uses": [
+   "input()",
+   "type()"
+  ],
+  "statement": "Read two values from the user and swap them using a third variable. Print the type of x before the swap, then print both values after it.",
+  "hint": "Copy x into [[temp]] first so it is not overwritten. No [[int()]] is used here, so both values stay [[str]].",
+  "sampleIn": "10\n20",
+  "sampleOut": "Type of x: <class 'str'>\nAfter swap: x = 20 y = 10",
+  "code": [
+   "x = input(\"Enter x: \")",
+   "y = input(\"Enter y: \")",
+   "print(\"Type of x:\", type(x))",
+   "temp = x",
+   "x = y",
+   "y = temp",
+   "print(\"After swap: x =\", x, \"y =\", y)"
+  ]
+ },
+ {
+  "id": 3,
+  "level": "easy",
+  "title": "Type detective",
+  "topics": [
+   "arithmetic"
+  ],
+  "uses": [
+   "type()"
+  ],
+  "statement": "Let a = 10 and b = 2. Print the result of every arithmetic operator together with its type. Which operator surprises you?",
+  "hint": "[[/]] is the only one that returns a [[float]] here. [[//]] keeps an [[int]] when both sides are [[int]].",
+  "sampleIn": "",
+  "sampleOut": "12 <class 'int'>\n8 <class 'int'>\n20 <class 'int'>\n5.0 <class 'float'>\n5 <class 'int'>\n0 <class 'int'>\n100 <class 'int'>",
+  "quiz": {
+   "q": "What does [[print(10 / 2)]] show?",
+   "options": [
+    "5",
+    "5.0",
+    "2.5",
+    "Error"
+   ],
+   "answer": 1,
+   "why": "[[/]] is true division. It always returns a float, even when the result is a whole number."
+  },
+  "code": [
+   "a = 10",
+   "b = 2",
+   "print(a + b, type(a + b))",
+   "print(a - b, type(a - b))",
+   "print(a * b, type(a * b))",
+   "print(a / b, type(a / b))",
+   "print(a // b, type(a // b))",
+   "print(a % b, type(a % b))",
+   "print(a ** b, type(a ** b))"
+  ]
+ },
+ {
+  "id": 4,
+  "level": "easy",
+  "title": "Area and perimeter of a rectangle",
+  "topics": [
+   "arithmetic"
+  ],
+  "uses": [
+   "input()",
+   "float()"
+  ],
+  "statement": "Read the length and width of a rectangle as decimal numbers. Print its area and its perimeter.",
+  "hint": "Use [[float()]] so that 5.5 is accepted. The perimeter is 2 x (length + width), so the brackets matter.",
+  "sampleIn": "5.5\n4",
+  "sampleOut": "Area = 22.0\nPerimeter = 19.0",
+  "code": [
+   "length = float(input(\"Length: \"))",
+   "width = float(input(\"Width: \"))",
+   "area = length * width",
+   "perimeter = 2 * (length + width)",
+   "print(\"Area =\", area)",
+   "print(\"Perimeter =\", perimeter)"
+  ]
+ },
+ {
+  "id": 5,
+  "level": "easy",
+  "title": "Score keeper",
+  "topics": [
+   "assignment",
+   "arithmetic"
+  ],
+  "uses": [
+   "variables"
+  ],
+  "statement": "A game starts with a score of 50. Apply these updates in order using assignment operators: add 10, subtract 5, double it, divide by 3 (keep the whole part), square it, then take the remainder when divided by 7. Print the final score.",
+  "hint": "Use [[+=]], [[-=]], [[*=]], [[//=]], [[**=]] and [[%=]]. Write down the value after every line.",
+  "sampleIn": "",
+  "sampleOut": "Final score: 1",
+  "quiz": {
+   "q": "The score is 110. What does [[score //= 3]] make it?",
+   "options": [
+    "36",
+    "36.67",
+    "37",
+    "3"
+   ],
+   "answer": 0,
+   "why": "[[//]] is floor division. 110 / 3 is 36.67, and the fraction is dropped, leaving 36."
+  },
+  "code": [
+   "score = 50",
+   "score += 10",
+   "score -= 5",
+   "score *= 2",
+   "score //= 3",
+   "score **= 2",
+   "score %= 7",
+   "print(\"Final score:\", score)"
+  ]
+ },
+ {
+  "id": 6,
+  "level": "easy",
+  "title": "Even or odd?",
+  "topics": [
+   "arithmetic",
+   "comparison"
+  ],
+  "uses": [
+   "input()",
+   "int()",
+   "type()"
+  ],
+  "statement": "Read an integer. Store whether it is even in a variable called [[is_even]], then print the variable and its type.",
+  "hint": "A number is even when [[num % 2]] equals 0. Comparison operators give back a [[bool]].",
+  "sampleIn": "17",
+  "sampleOut": "Is even? False\nType: <class 'bool'>",
+  "code": [
+   "num = int(input(\"Enter a number: \"))",
+   "is_even = num % 2 == 0",
+   "print(\"Is even?\", is_even)",
+   "print(\"Type:\", type(is_even))"
+  ]
+ },
+ {
+  "id": 7,
+  "level": "easy",
+  "title": "Peel off the last digit",
+  "topics": [
+   "arithmetic"
+  ],
+  "uses": [
+   "input()",
+   "int()"
+  ],
+  "statement": "Read a whole number. Print its last digit and the number that remains after the last digit is removed.",
+  "hint": "[[% 10]] gives the last digit. [[// 10]] removes it.",
+  "sampleIn": "2586",
+  "sampleOut": "Last digit: 6\nRemaining: 258",
+  "code": [
+   "num = int(input(\"Enter a number: \"))",
+   "last_digit = num % 10",
+   "remaining = num // 10",
+   "print(\"Last digit:\", last_digit)",
+   "print(\"Remaining:\", remaining)"
+  ]
+ },
+ {
+  "id": 8,
+  "level": "medium",
+  "title": "Temperature converter",
+  "topics": [
+   "arithmetic"
+  ],
+  "uses": [
+   "input()",
+   "float()",
+   "type()"
+  ],
+  "statement": "Read a temperature in Celsius as a decimal number. Convert it to Fahrenheit (C x 9 / 5 + 32) and to Kelvin (C + 273). Print both, then the types of [[celsius]] and [[fahrenheit]].",
+  "hint": "Multiplication and division run left to right before [[+]]. Keep each conversion in a single expression.",
+  "sampleIn": "37.5",
+  "sampleOut": "Fahrenheit: 99.5\nKelvin: 310.5\n<class 'float'> <class 'float'>",
+  "code": [
+   "celsius = float(input(\"Temperature in C: \"))",
+   "fahrenheit = celsius * 9 / 5 + 32",
+   "kelvin = celsius + 273",
+   "print(\"Fahrenheit:\", fahrenheit)",
+   "print(\"Kelvin:\", kelvin)",
+   "print(type(celsius), type(fahrenheit))"
+  ]
+ },
+ {
+  "id": 9,
+  "level": "easy",
+  "title": "Multiply and compare",
+  "topics": [
+   "arithmetic",
+   "comparison"
+  ],
+  "uses": [
+   "input()",
+   "int()"
+  ],
+  "statement": "Read two whole numbers. Print their product, then print whether the product is greater than 50.",
+  "hint": "[[*]] multiplies the two numbers. [[>]] compares the product with 50 and gives a [[bool]].",
+  "sampleIn": "6\n9",
+  "sampleOut": "Product: 54\nGreater than 50? True",
+  "code": [
+   "a = int(input(\"Enter first number: \"))",
+   "b = int(input(\"Enter second number: \"))",
+   "product = a * b",
+   "print(\"Product:\", product)",
+   "print(\"Greater than 50?\", product > 50)"
+  ]
+ },
+ {
+  "id": 10,
+  "level": "medium",
+  "title": "Simple interest",
+  "topics": [
+   "arithmetic",
+   "assignment"
+  ],
+  "uses": [
+   "input()",
+   "int()",
+   "type()"
+  ],
+  "statement": "Read the principal, the yearly rate in percent and the time in years, all as whole numbers. Print the simple interest, the total amount and the types of [[principal]] and [[interest]].",
+  "hint": "Simple interest = principal x rate x time / 100. Dividing with [[/]] makes the result a [[float]].",
+  "sampleIn": "5000\n4\n3",
+  "sampleOut": "Interest: 600.0\nAmount: 5600.0\n<class 'int'> <class 'float'>",
+  "code": [
+   "principal = int(input(\"Principal: \"))",
+   "rate = int(input(\"Rate (%): \"))",
+   "years = int(input(\"Years: \"))",
+   "interest = principal * rate * years / 100",
+   "amount = principal + interest",
+   "print(\"Interest:\", interest)",
+   "print(\"Amount:\", amount)",
+   "print(type(principal), type(interest))"
+  ]
+ },
+ {
+  "id": 11,
+  "level": "medium",
+  "title": "Leap year checker",
+  "topics": [
+   "logical",
+   "comparison"
+  ],
+  "uses": [
+   "input()",
+   "int()"
+  ],
+  "statement": "A year is a leap year if it is divisible by 4 but not by 100, or if it is divisible by 400. Read a year and print whether it is a leap year.",
+  "hint": "Store each divisibility check in its own [[bool]] variable, then combine them with [[and]], [[or]] and [[not]].",
+  "sampleIn": "2024",
+  "sampleOut": "2024 is leap year: True",
+  "quiz": {
+   "q": "For 1900: [[div4]] = True, [[div100]] = True, [[div400]] = False. What is [[(div4 and not div100) or div400]]?",
+   "options": [
+    "True",
+    "False"
+   ],
+   "answer": 1,
+   "why": "[[not div100]] is False, so [[True and False]] is False. Then [[False or False]] is False. Century years must be divisible by 400 to count."
+  },
+  "code": [
+   "year = int(input(\"Enter a year: \"))",
+   "div4 = year % 4 == 0",
+   "div100 = year % 100 == 0",
+   "div400 = year % 400 == 0",
+   "is_leap = (div4 and not div100) or div400",
+   "print(year, \"is leap year:\", is_leap)"
+  ]
+ },
+ {
+  "id": 12,
+  "level": "medium",
+  "title": "Mixing types",
+  "topics": [
+   "arithmetic",
+   "comparison"
+  ],
+  "uses": [
+   "int()",
+   "str()",
+   "type()"
+  ],
+  "statement": "Start with a = 5 (an int), b = 2.0 (a float) and c = \"3\" (a str). Create d = a + b, e = a + int(c), f = str(a) + c and g = a > b. Print the type of d, e, f and g on one line, then print the four values on the next line. Work out each type before you run your code.",
+  "hint": "An [[int]] mixed with a [[float]] gives a [[float]]. [[int()]] converts text to a number. [[+]] on two [[str]] values joins them. Comparisons give a [[bool]].",
+  "sampleIn": "",
+  "sampleOut": "<class 'float'> <class 'int'> <class 'str'> <class 'bool'>\n7.0 8 53 True",
+  "quiz": {
+   "q": "With [[a = 5]] and [[c = \"3\"]], what is [[f = str(a) + c]]?",
+   "options": [
+    "8",
+    "'53'",
+    "15",
+    "TypeError"
+   ],
+   "answer": 1,
+   "why": "[[str(a)]] is the text [['5']]. Adding two [[str]] values joins them, so the result is the text [['53']], not a number."
+  },
+  "code": [
+   "a = 5",
+   "b = 2.0",
+   "c = \"3\"",
+   "d = a + b",
+   "e = a + int(c)",
+   "f = str(a) + c",
+   "g = a > b",
+   "print(type(d), type(e), type(f), type(g))",
+   "print(d, e, f, g)"
+  ]
+ },
+ {
+  "id": 13,
+  "level": "medium",
+  "title": "Banner maker",
+  "topics": [
+   "arithmetic"
+  ],
+  "uses": [
+   "input()",
+   "type()"
+  ],
+  "statement": "Read a name. Build a line of 20 dashes using [[*]], then build a greeting using [[+]]. Print the line, the greeting, the line again, and the type of the greeting.",
+  "hint": "[[*]] repeats a [[str]] and [[+]] joins two [[str]] values. Both sides of [[+]] must be [[str]].",
+  "sampleIn": "Riya",
+  "sampleOut": "--------------------\nHello, Riya!\n--------------------\nType: <class 'str'>",
+  "code": [
+   "name = input(\"Enter your name: \")",
+   "line = \"-\" * 20",
+   "greeting = \"Hello, \" + name + \"!\"",
+   "print(line)",
+   "print(greeting)",
+   "print(line)",
+   "print(\"Type:\", type(greeting))"
+  ]
+ },
+ {
+  "id": 14,
+  "level": "medium",
+  "title": "Vowel or not",
+  "topics": [
+   "membership"
+  ],
+  "uses": [
+   "input()"
+  ],
+  "statement": "Read one letter. Use the membership operators to print whether it is a vowel and whether it is not a vowel.",
+  "hint": "Put lowercase and uppercase vowels in one [[str]], then test the letter with [[in]] and [[not in]]. This works for a single letter.",
+  "sampleIn": "E",
+  "sampleOut": "Vowel? True\nNot a vowel? False",
+  "code": [
+   "vowels = \"aeiouAEIOU\"",
+   "ch = input(\"Enter a letter: \")",
+   "is_vowel = ch in vowels",
+   "not_vowel = ch not in vowels",
+   "print(\"Vowel?\", is_vowel)",
+   "print(\"Not a vowel?\", not_vowel)"
+  ]
+ },
+ {
+  "id": 15,
+  "level": "medium",
+  "title": "Login check",
+  "topics": [
+   "comparison",
+   "logical"
+  ],
+  "uses": [
+   "input()",
+   "int()"
+  ],
+  "statement": "The saved username is admin and the saved PIN is 1234. Read a username and a PIN, check each one with [[==]], then print whether each is correct and whether access is granted.",
+  "hint": "Convert the PIN with [[int()]] before comparing, because a [[str]] is never equal to an [[int]]. Store each check in a [[bool]] variable and combine them with [[and]].",
+  "sampleIn": "admin\n4321",
+  "sampleOut": "Username ok: True\nPIN ok: False\nAccess granted: False",
+  "quiz": {
+   "q": "What does [[1234 == \"1234\"]] give?",
+   "options": [
+    "True",
+    "False"
+   ],
+   "answer": 1,
+   "why": "An int and a str are different types, so they are never equal. Convert the input with [[int()]] first."
+  },
+  "code": [
+   "saved_user = \"admin\"",
+   "saved_pin = 1234",
+   "user = input(\"Username: \")",
+   "pin = int(input(\"PIN: \"))",
+   "user_ok = user == saved_user",
+   "pin_ok = pin == saved_pin",
+   "print(\"Username ok:\", user_ok)",
+   "print(\"PIN ok:\", pin_ok)",
+   "print(\"Access granted:\", user_ok and pin_ok)"
+  ]
+ },
+ {
+  "id": 16,
+  "level": "easy",
+  "title": "Price with tax",
+  "topics": [
+   "arithmetic"
+  ],
+  "uses": [
+   "input()",
+   "float()"
+  ],
+  "statement": "Read the price of an item and the tax percentage. Calculate and print the tax amount and the total price.",
+  "hint": "Tax = price * tax_percent / 100. Add the tax to the price to get the total.",
+  "sampleIn": "200\n5",
+  "sampleOut": "Tax: 10.0\nTotal: 210.0",
+  "code": [
+   "price = float(input(\"Price: \"))",
+   "tax_percent = float(input(\"Tax %: \"))",
+   "tax = price * tax_percent / 100",
+   "total = price + tax",
+   "print(\"Tax:\", tax)",
+   "print(\"Total:\", total)"
+  ]
+ },
+ {
+  "id": 17,
+  "level": "hard",
+  "title": "Scholarship eligibility",
+  "topics": [
+   "comparison",
+   "logical"
+  ],
+  "uses": [
+   "input()",
+   "int()",
+   "float()"
+  ],
+  "statement": "A student is eligible if the age is between 18 and 25 (inclusive), the marks are at least 60, and they have an ID card. Read the details, store each check in a [[bool]] variable and print the results.",
+  "hint": "Compare first, then combine with [[and]]. Comparing the input text with [[== \"yes\"]] gives a [[bool]] directly.",
+  "sampleIn": "19\n58.5\nyes",
+  "sampleOut": "Age ok: True\nMarks ok: False\nEligible: False",
+  "code": [
+   "age = int(input(\"Age: \"))",
+   "marks = float(input(\"Marks: \"))",
+   "has_id = input(\"Have ID card? (yes/no): \") == \"yes\"",
+   "age_ok = age >= 18 and age <= 25",
+   "marks_ok = marks >= 60.0",
+   "eligible = age_ok and marks_ok and has_id",
+   "print(\"Age ok:\", age_ok)",
+   "print(\"Marks ok:\", marks_ok)",
+   "print(\"Eligible:\", eligible)"
+  ]
+ },
+ {
+  "id": 18,
+  "level": "easy",
+  "title": "Compare two numbers",
+  "topics": [
+   "comparison"
+  ],
+  "uses": [
+   "input()",
+   "int()"
+  ],
+  "statement": "Read two whole numbers. Print the result of comparing them with [[>]], [[<]] and [[==]].",
+  "hint": "Each comparison operator gives back a [[bool]]: True or False.",
+  "sampleIn": "12\n27",
+  "sampleOut": "a > b: False\na < b: True\na == b: False",
+  "code": [
+   "a = int(input(\"Enter first number: \"))",
+   "b = int(input(\"Enter second number: \"))",
+   "print(\"a > b:\", a > b)",
+   "print(\"a < b:\", a < b)",
+   "print(\"a == b:\", a == b)"
+  ]
+ },
+ {
+  "id": 19,
+  "level": "easy",
+  "title": "Full name",
+  "topics": [
+   "arithmetic"
+  ],
+  "uses": [
+   "input()",
+   "type()"
+  ],
+  "statement": "Read a first name and a last name. Join them with a space using [[+]], then print the full name and its type.",
+  "hint": "[[+]] on two [[str]] values joins them. Add \" \" between the two names so they don't run together.",
+  "sampleIn": "Asha\nRao",
+  "sampleOut": "Full name: Asha Rao\n<class 'str'>",
+  "code": [
+   "first = input(\"First name: \")",
+   "last = input(\"Last name: \")",
+   "full = first + \" \" + last",
+   "print(\"Full name:\", full)",
+   "print(type(full))"
+  ]
+ },
+ {
+  "id": 20,
+  "level": "hard",
+  "title": "BMI classifier",
+  "topics": [
+   "arithmetic",
+   "comparison"
+  ],
+  "uses": [
+   "input()",
+   "float()",
+   "round()"
+  ],
+  "statement": "Read weight in kg and height in cm. Compute the BMI (weight divided by the square of the height in metres), round it to 1 decimal place, and print which range it falls in.",
+  "hint": "Convert cm to metres with [[/ 100]] before squaring. Python allows a chained comparison such as [[18.5 <= bmi < 25]].",
+  "sampleIn": "70\n175",
+  "sampleOut": "BMI: 22.9\nUnderweight: False\nNormal: True\nOverweight: False",
+  "code": [
+   "weight = float(input(\"Weight (kg): \"))",
+   "height = float(input(\"Height (cm): \"))",
+   "bmi = round(weight / (height / 100) ** 2, 1)",
+   "underweight = bmi < 18.5",
+   "normal = 18.5 <= bmi < 25",
+   "overweight = bmi >= 25",
+   "print(\"BMI:\", bmi)",
+   "print(\"Underweight:\", underweight)",
+   "print(\"Normal:\", normal)",
+   "print(\"Overweight:\", overweight)"
+  ]
+ }
+];
+/*DATA-END*/
+</script>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const KEY = 'operator-lab-v1';
+const TOPICS = { arithmetic: 'Arithmetic', assignment: 'Assignment', comparison: 'Comparison', logical: 'Logical', membership: 'Membership' };
+const LEVEL_XP = { easy: 10, medium: 20, hard: 30 };
+const LV = { easy: ['Easy', 1], medium: ['Medium', 2], hard: ['Hard', 3] };
+const CHECK = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const fmt = s => esc(s).replace(/\[\[(.+?)\]\]/g, '<code>$1</code>');
+const byId = {};
+QUESTIONS.forEach(q => { byId[q.id] = q; });
+
+/* ---------- saved state ---------- */
+let S = { solved: {}, quiz: {}, work: {}, theme: '' };
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); return true; } catch (e) { return false; } };
+
+/* ---------- helpers ---------- */
+function inferType(v) {
+  const s = String(v).trim();
+  if (s === 'True' || s === 'False') return 'bool';
+  if (/^-?\d+$/.test(s)) return 'int';
+  if (/^-?(\d+\.\d*|\.\d+)(e[+-]?\d+)?$/i.test(s)) return 'float';
+  if (/^(['"]).*\1$/.test(s)) return 'str';
+  if (s === 'None') return 'NoneType';
+  return 'obj';
+}
+function setTypeClass(el, type) { el.className = el.className.replace(/\bt-\S+/g, '').trim() + ' t-' + type; }
+function replay(el, cls) { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+
+const KW = new Set(['and', 'or', 'not', 'in', 'is', 'if', 'elif', 'else', 'True', 'False', 'None', 'for', 'while']);
+const BI = new Set(['print', 'input', 'int', 'float', 'str', 'bool', 'type', 'round', 'len', 'abs']);
+function tokenize(line) {
+  const re = /(#.*$)|((?:[fF])?(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'))|(\d+(?:\.\d+)?)|([A-Za-z_]\w*)|(\/\/=?|\*\*=?|[+\-*\/%=<>!]=?)|(\s+)|(.)/g;
+  const out = []; let m;
+  while ((m = re.exec(line))) {
+    if (m[1]) out.push(['cm', m[1]]);
+    else if (m[2]) out.push(['st', m[2]]);
+    else if (m[3]) out.push(['nm', m[3]]);
+    else if (m[4]) out.push([KW.has(m[4]) ? 'kw' : BI.has(m[4]) ? 'bi' : 'id', m[4]]);
+    else if (m[5]) out.push(['op', m[5]]);
+    else if (m[6]) out.push(['ws', m[6]]);
+    else out.push(['pn', m[7]]);
+  }
+  return out;
+}
+
+/* ---------- theme ---------- */
+$('#themeBtn').addEventListener('click', () => {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  S.theme = next; save();
+});
+
+/* ---------- toast + confetti ---------- */
+let toastT;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400);
+}
+const cv = $('#confetti'), cx = cv.getContext('2d');
+let parts = [], raf = 0;
+function fit() { const d = window.devicePixelRatio || 1; cv.width = innerWidth * d; cv.height = innerHeight * d; cx.setTransform(d, 0, 0, d, 0, 0); }
+fit(); window.addEventListener('resize', fit);
+const COLORS = ['#2F6BFF', '#0EA5A0', '#F2B233', '#D6336C', '#7C5CFF', '#FFD60A'];
+function loop() {
+  cx.clearRect(0, 0, innerWidth, innerHeight);
+  parts = parts.filter(p => p.t < p.max && p.y < innerHeight + 30);
+  parts.forEach(p => {
+    p.t++; p.vy += .28; p.vx *= .992; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    cx.save(); cx.globalAlpha = p.t > p.max - 25 ? (p.max - p.t) / 25 : 1;
+    cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); cx.restore();
+  });
+  raf = parts.length ? requestAnimationFrame(loop) : 0;
+  if (!raf) cx.clearRect(0, 0, innerWidth, innerHeight);
+}
+function burst(x, y, n, spread) {
+  if (reduce) return;
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, sp = Math.random() * (spread || 9) + 3;
+    parts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 5, w: 6 + Math.random() * 6, h: 4 + Math.random() * 5, r: Math.random() * 6.28, vr: (Math.random() - .5) * .4, c: COLORS[i % COLORS.length], t: 0, max: 80 + Math.random() * 45 });
+  }
+  if (!raf) raf = requestAnimationFrame(loop);
+}
+
+/* ---------- hero: type tracer ---------- */
+const EX = [
+  { a: '10', b: '2', op: '/', r: '5.0', note: '/ always gives a float, even when the answer is a whole number.' },
+  { a: '7', b: '2', op: '//', r: '3', note: '// drops the fraction and keeps an int.' },
+  { a: "'5'", b: "'3'", op: '+', r: "'53'", note: '+ joins two str values. It does not add them.' },
+  { a: '5', b: '3', op: '>', r: 'True', note: 'Comparison operators give a bool.' },
+  { a: '4', b: '2.5', op: '*', r: '10.0', note: 'An int mixed with a float gives a float.' }
+];
+const stage = $('#stage'), P = { a: $('.ea', stage), b: $('.eb', stage), r: $('.er', stage), op: $('.opx', stage), note: $('#stageNote') };
+let exI = 0, tm = [];
+const clearTm = () => { tm.forEach(clearTimeout); tm = []; };
+function fill(el, val) { const t = inferType(val); setTypeClass(el, t); $('.tv', el).textContent = val; $('.tbadge', el).textContent = t; }
+function stageOff() { stage.classList.remove('s-in', 's-op', 's-res'); }
+function showEx(i, animate) {
+  clearTm(); stageOff(); void stage.offsetWidth;
+  const e = EX[i];
+  fill(P.a, e.a); fill(P.b, e.b); fill(P.r, e.r); P.op.textContent = e.op; P.note.textContent = e.note;
+  if (!animate) { stage.classList.add('s-in', 's-op', 's-res'); return; }
+  tm.push(setTimeout(() => stage.classList.add('s-in'), 80));
+  tm.push(setTimeout(() => stage.classList.add('s-op'), 950));
+  tm.push(setTimeout(() => stage.classList.add('s-res'), 1650));
+  tm.push(setTimeout(stageOff, 5400));
+  tm.push(setTimeout(() => { exI = (exI + 1) % EX.length; showEx(exI, true); }, 6000));
+}
+$('#nextEx').addEventListener('click', () => {
+  clearTm(); stageOff();
+  tm.push(setTimeout(() => { exI = (exI + 1) % EX.length; showEx(exI, !reduce); }, reduce ? 0 : 450));
+});
+document.addEventListener('visibilitychange', () => { if (reduce) return; if (document.hidden) clearTm(); else showEx(exI, true); });
+showEx(0, !reduce);
+
+/* ---------- question cards ---------- */
+const USE_TESTS = {
+  'input()': /\binput\s*\(/, 'int()': /\bint\s*\(/, 'float()': /\bfloat\s*\(/, 'str()': /\bstr\s*\(/,
+  'type()': /\btype\s*\(/, 'round()': /\bround\s*\(/,
+  'variables': /^[ \t]*[A-Za-z_]\w*[ \t]*(?:\/\/|\*\*|[+\-*\/%])?=(?!=)/m
+};
+function cardHTML(q) {
+  const [lvName] = LV[q.level];
+  const tags = q.topics.map(t => `<span class="tag">${TOPICS[t]}</span>`).join('');
+  const uses = q.uses.map(u => `<code class="use">${esc(u)}</code>`).join('');
+  const chips = q.uses.map(u => `<span class="ck" data-use="${esc(u)}"><i aria-hidden="true"></i>${esc(u)}</span>`).join('');
+  const sIn = q.sampleIn ? `<pre>${esc(q.sampleIn)}</pre>` : '<pre class="none">No input needed</pre>';
+  const quizBtn = q.quiz ? `<button class="btn" data-act="quiz" data-on="Hide prediction" data-off="Predict the output" aria-expanded="false" aria-controls="quiz-${q.id}">Predict the output</button>` : '';
+  const quizPanel = q.quiz ? `
+    <div class="panel" data-panel="quiz" id="quiz-${q.id}"><div class="inner"><div class="pad">
+      <div class="quiz"><p class="qq">${fmt(q.quiz.q)}</p>
+        <div class="opts">${q.quiz.options.map((o, i) => `<button class="opt" data-act="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div>
+        <div class="qfb" aria-live="polite"></div></div>
+    </div></div></div>` : '';
+  return `
+  <article class="q" id="q${q.id}" data-id="${q.id}">
+    <div class="gutter"><span class="qn">${q.id}</span><span class="tick" aria-hidden="true">${CHECK}</span></div>
+    <div class="qbody">
+      <header class="qhead">
+        <h3>${esc(q.title)}</h3>
+        <div class="meta"><span class="lvl lv-${q.level}" role="img" aria-label="Difficulty: ${lvName}"><i></i><i></i><i></i></span><span>${lvName}</span></div>
+      </header>
+      <div class="tags">${tags}${uses}</div>
+      <p class="stmt">${fmt(q.statement)}</p>
+      <div class="io">
+        <figure><figcaption>Sample input</figcaption>${sIn}</figure>
+        <figure><figcaption>Sample output</figcaption><pre>${esc(q.sampleOut)}</pre></figure>
+      </div>
+      <div class="actions">
+        <button class="btn" data-act="hint" data-on="Hide hint" data-off="Show hint" aria-expanded="false" aria-controls="hint-${q.id}">Show hint</button>
+        <button class="btn" data-act="work" data-on="Close workarea" data-off="Open workarea" aria-expanded="false" aria-controls="work-${q.id}">Open workarea</button>
+        ${quizBtn}
+        <button class="btn ans" data-act="ans" data-on="Hide answer" data-off="Show answer" aria-expanded="false" aria-controls="ans-${q.id}" disabled title="Unlocks once all 20 questions are marked solved">Show answer</button>
+        <button class="btn solve" data-act="solve" aria-pressed="false">Mark solved</button>
+        <span class="xpnote">+${LEVEL_XP[q.level]} XP</span>
+      </div>
+      <div class="panel" data-panel="hint" id="hint-${q.id}"><div class="inner"><div class="pad"><div class="hintbox">${fmt(q.hint)}</div></div></div></div>
+      <div class="panel" data-panel="work" id="work-${q.id}"><div class="inner"><div class="pad">
+        <div class="work">
+          <div class="worktop"><span>question-${q.id}.py</span><span class="savestate" aria-live="polite">Nothing written yet</span></div>
+          <div class="editor">
+            <div class="lnums" aria-hidden="true"></div>
+            <div class="stack">
+              <pre class="hl" aria-hidden="true"><code></code></pre>
+              <textarea class="ta" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" placeholder="# Write your solution here" aria-label="Your Python code for question ${q.id}"></textarea>
+            </div>
+          </div>
+          <div class="workbar">
+            <div class="checks"><span>Your code uses</span>${chips}</div>
+            <div class="workbtns">
+              <button class="mini" data-act="copy">Copy code</button>
+              <button class="mini" data-act="download">Download .py</button>
+              <button class="mini" data-act="clear">Clear</button>
+            </div>
+          </div>
+          <div class="workhelp">Tab adds 4 spaces. To move focus out of the editor, press Esc and then Tab.</div>
+        </div>
+      </div></div></div>
+      ${quizPanel}
+      <div class="panel" data-panel="ans" id="ans-${q.id}"><div class="inner"><div class="pad">
+        <div class="ansbox">
+          <div class="ansbar"><span>answer.py</span><button class="mini" data-act="copyans">Copy code</button></div>
+          <pre class="anscode"><code></code></pre>
+        </div>
+        <p class="ansnote">This is one way to solve it. Yours can look different and still be correct.</p>
+      </div></div></div>
+    </div>
+  </article>`;
+}
+const list = $('#list');
+list.innerHTML = QUESTIONS.map(cardHTML).join('');
+
+/* ---------- workarea (code editor) ---------- */
+const LH = 24, PADV = 12, MINLINES = 8;
+function highlight(code) {
+  return code.split('\n').map(l => tokenize(l).map(([k, t]) => '<span class="tk-' + k + '">' + esc(t) + '</span>').join('')).join('\n') + '\n';
+}
+function updateEditor(card) {
+  const ta = $('.ta', card), hlEl = $('.hl', card), ln = $('.lnums', card), val = ta.value;
+  const rows = Math.max(MINLINES, val.split('\n').length), h = rows * LH + PADV * 2;
+  $('code', hlEl).innerHTML = highlight(val);
+  if (ln.dataset.n !== String(rows)) { ln.dataset.n = rows; ln.textContent = Array.from({ length: rows }, (_, i) => i + 1).join('\n'); }
+  ta.style.height = h + 'px'; hlEl.style.height = h + 'px';
+  hlEl.scrollLeft = ta.scrollLeft;
+  const code = val.replace(/#.*$/gm, '');
+  $$('.ck', card).forEach(c => {
+    const re = USE_TESTS[c.dataset.use], on = re ? re.test(code) : false;
+    if (on !== c.classList.contains('on')) c.classList.toggle('on', on);
+  });
+}
+const saveTimers = {};
+function scheduleSave(card) {
+  const id = card.dataset.id, ta = $('.ta', card), stEl = $('.savestate', card);
+  clearTimeout(saveTimers[id]);
+  stEl.classList.remove('flash');
+  saveTimers[id] = setTimeout(() => {
+    const has = !!ta.value.trim();
+    if (has) S.work[id] = ta.value; else delete S.work[id];
+    const ok = save();
+    card.classList.toggle('draft', has);
+    stEl.textContent = !has ? 'Nothing written yet' : ok ? 'Saved in this browser' : 'Not saved. Browser storage is off.';
+    if (has && ok) replay(stEl, 'flash');
+  }, 500);
+}
+function insertText(ta, text) {
+  ta.focus();
+  let done = false;
+  try { done = document.execCommand('insertText', false, text); } catch (e) {}
+  if (!done) { ta.setRangeText(text, ta.selectionStart, ta.selectionEnd, 'end'); ta.dispatchEvent(new Event('input', { bubbles: true })); }
+}
+list.addEventListener('input', e => {
+  const ta = e.target.closest && e.target.closest('.ta'); if (!ta) return;
+  const card = ta.closest('.q'); updateEditor(card); scheduleSave(card);
+});
+list.addEventListener('scroll', e => {
+  if (e.target.classList && e.target.classList.contains('ta')) $('.hl', e.target.closest('.q')).scrollLeft = e.target.scrollLeft;
+}, true);
+list.addEventListener('keydown', e => {
+  const ta = e.target.closest && e.target.closest('.ta'); if (!ta) return;
+  if (e.key === 'Escape') { ta.dataset.free = '1'; return; }
+  if (e.key === 'Tab') {
+    if (ta.dataset.free === '1') { delete ta.dataset.free; return; }
+    e.preventDefault();
+    const s0 = ta.selectionStart, en = ta.selectionEnd, v = ta.value, multi = v.slice(s0, en).includes('\n');
+    if (!e.shiftKey && !multi) { insertText(ta, '    '); return; }
+    const ls = v.lastIndexOf('\n', s0 - 1) + 1; let le = v.indexOf('\n', en); if (le === -1) le = v.length;
+    const block = v.slice(ls, le);
+    const outText = block.split('\n').map(l => e.shiftKey ? l.replace(/^ {1,4}/, '') : '    ' + l).join('\n');
+    ta.setSelectionRange(ls, le); insertText(ta, outText);
+    if (multi) ta.setSelectionRange(ls, ls + outText.length);
+    else { const p = Math.max(ls, s0 + (outText.length - block.length)); ta.setSelectionRange(p, p); }
+    return;
+  }
+  delete ta.dataset.free;
+  if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.metaKey && !e.isComposing) {
+    const s0 = ta.selectionStart, v = ta.value, ls = v.lastIndexOf('\n', s0 - 1) + 1, before = v.slice(ls, s0);
+    const indent = before.match(/^[ \t]*/)[0], extra = /:\s*$/.test(before) ? '    ' : '';
+    e.preventDefault(); insertText(ta, '\n' + indent + extra);
+  }
+});
+function renderAnswers() {
+  $$('.q', list).forEach(card => {
+    const q = byId[card.dataset.id], el = $('.anscode code', card);
+    if (el) el.innerHTML = highlight(q.code.join('\n'));
+  });
+}
+async function copyAnswer(card, btn) {
+  const text = byId[card.dataset.id].code.join('\n');
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (_) {} t.remove(); }
+  btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = 'Copy code'; }, 1600);
+}
+function initEditors() {
+  $$('.q', list).forEach(card => {
+    const id = card.dataset.id, ta = $('.ta', card);
+    if (S.work && S.work[id]) { ta.value = S.work[id]; $('.savestate', card).textContent = 'Draft restored'; card.classList.add('draft'); }
+    updateEditor(card);
+  });
+}
+async function copyCode(card, btn) {
+  const text = $('.ta', card).value;
+  if (!text.trim()) { toast('Nothing to copy yet'); return; }
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (_) {} t.remove(); }
+  btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = 'Copy code'; }, 1600);
+}
+function downloadCode(card) {
+  const v = $('.ta', card).value;
+  if (!v.trim()) { toast('Write some code first'); return; }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([v.endsWith('\n') ? v : v + '\n'], { type: 'text/x-python' }));
+  a.download = 'question-' + card.dataset.id + '.py';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function clearCode(card, btn) {
+  if (!$('.ta', card).value) return;
+  if (btn.dataset.armed) {
+    delete btn.dataset.armed; btn.textContent = 'Clear';
+    const ta = $('.ta', card); ta.value = ''; updateEditor(card); scheduleSave(card); ta.focus();
+    return;
+  }
+  btn.dataset.armed = '1'; btn.textContent = 'Click again to clear';
+  setTimeout(() => { if (btn.dataset.armed) { delete btn.dataset.armed; btn.textContent = 'Clear'; } }, 3000);
+}
+
+/* ---------- card interactions ---------- */
+function togglePanel(card, btn, name) {
+  const p = $('.panel[data-panel="' + name + '"]', card);
+  const open = !p.classList.contains('open');
+  p.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', String(open));
+  if (btn.dataset.on) btn.textContent = open ? btn.dataset.on : btn.dataset.off;
+  return open;
+}
+function updateAnswerLocks(solvedCount) {
+  const unlocked = solvedCount === QUESTIONS.length;
+  $$('.q', list).forEach(card => {
+    const b = $('[data-act="ans"]', card); if (!b) return;
+    b.disabled = !unlocked;
+    b.title = unlocked ? '' : 'Unlocks once all 20 questions are marked solved';
+    if (!unlocked) {
+      const p = $('.panel[data-panel="ans"]', card);
+      if (p && p.classList.contains('open')) { p.classList.remove('open'); b.setAttribute('aria-expanded', 'false'); b.textContent = b.dataset.off; }
+    }
+  });
+  const status = $('#ansStatus');
+  status.classList.toggle('unlocked', unlocked);
+  status.innerHTML = unlocked
+    ? 'All ' + QUESTIONS.length + ' questions solved. Answers are unlocked below.'
+    : 'Answers unlock once every question is solved. <b>' + solvedCount + ' / ' + QUESTIONS.length + '</b> solved so far.';
+}
+function syncCard(card) {
+  const q = byId[card.dataset.id], on = !!S.solved[q.id], b = $('.solve', card);
+  card.classList.toggle('solved', on);
+  b.setAttribute('aria-pressed', String(on));
+  b.textContent = on ? 'Solved' : 'Mark solved';
+}
+function toggleSolved(card, btn) {
+  const q = byId[card.dataset.id], now = !S.solved[q.id];
+  if (now) S.solved[q.id] = true; else delete S.solved[q.id];
+  save(); syncCard(card);
+  const solved = updateProgress();
+  if (now) {
+    const r = btn.getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top, 46);
+    if (solved === QUESTIONS.length) {
+      toast('All ' + QUESTIONS.length + ' questions solved. Answers are now unlocked!');
+      [0, 250, 500].forEach(d => setTimeout(() => burst(Math.random() * innerWidth, innerHeight * .35, 70, 12), d));
+    } else toast('Question ' + q.id + ' marked solved. +' + LEVEL_XP[q.level] + ' XP');
+  }
+}
+function answer(card, btn) {
+  const q = byId[card.dataset.id], box = $('.quiz', card);
+  if (box.dataset.done) return;
+  const i = +btn.dataset.i, right = i === q.quiz.answer;
+  $$('.opt', box).forEach((b, j) => { b.disabled = true; if (j === q.quiz.answer) b.classList.add('right'); else if (j === i) b.classList.add('wrong'); });
+  box.dataset.done = '1';
+  $('.qfb', box).innerHTML = '<strong>' + (right ? 'Correct.' : 'Not quite.') + '</strong> ' + fmt(q.quiz.why) + ' <button class="btn sm" data-act="retry">Try again</button>';
+  if (right && !S.quiz[q.id]) {
+    S.quiz[q.id] = true; save(); updateProgress();
+    const r = btn.getBoundingClientRect(); burst(r.left + r.width / 2, r.top, 26, 7);
+    toast('Correct. +5 XP');
+  }
+}
+function retry(card) {
+  const box = $('.quiz', card); delete box.dataset.done;
+  $$('.opt', box).forEach(b => { b.disabled = false; b.classList.remove('right', 'wrong'); });
+  $('.qfb', box).innerHTML = '';
+}
+list.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const card = b.closest('.q');
+  switch (b.dataset.act) {
+    case 'hint': togglePanel(card, b, 'hint'); break;
+    case 'quiz': togglePanel(card, b, 'quiz'); break;
+    case 'work': {
+      const open = togglePanel(card, b, 'work');
+      if (open) requestAnimationFrame(() => $('.ta', card).focus({ preventScroll: true }));
+      break;
+    }
+    case 'solve': toggleSolved(card, b); break;
+    case 'opt': answer(card, b); break;
+    case 'retry': retry(card); break;
+    case 'copy': copyCode(card, b); break;
+    case 'download': downloadCode(card); break;
+    case 'clear': clearCode(card, b); break;
+    case 'ans': togglePanel(card, b, 'ans'); break;
+    case 'copyans': copyAnswer(card, b); break;
+  }
+});
+
+/* ---------- progress ---------- */
+const ring = $('#ringBar'), C = 2 * Math.PI * 42;
+ring.style.strokeDasharray = C; ring.style.strokeDashoffset = C;
+let shownXP = 0;
+function setXP(n) {
+  const from = shownXP, el = $('#xpNum'); shownXP = n;
+  if (reduce || from === n) { el.textContent = n; return; }
+  let t0 = null;
+  const f = t => { if (t0 === null) t0 = t; const p = Math.min(1, (t - t0) / 500); el.textContent = Math.round(from + (n - from) * p); if (p < 1) requestAnimationFrame(f); };
+  requestAnimationFrame(f);
+}
+function updateProgress() {
+  const by = { easy: [0, 0], medium: [0, 0], hard: [0, 0] }; let solved = 0, xp = 0;
+  QUESTIONS.forEach(q => {
+    by[q.level][1]++;
+    if (S.solved[q.id]) { by[q.level][0]++; solved++; xp += LEVEL_XP[q.level]; }
+    if (S.quiz[q.id]) xp += 5;
+  });
+  ring.style.strokeDashoffset = C * (1 - solved / QUESTIONS.length);
+  $('#ringNum').innerHTML = '<span>' + solved + '<small>/' + QUESTIONS.length + '</small></span>';
+  $('#ringNum').setAttribute('aria-label', solved + ' of ' + QUESTIONS.length + ' questions solved');
+  $('#lvrows').innerHTML = Object.keys(by).map(k => {
+    const [d, t] = by[k];
+    return '<div class="lvrow"><span>' + LV[k][0] + '</span><span class="trackbar"><i style="width:' + (t ? d / t * 100 : 0) + '%"></i></span><b>' + d + '/' + t + '</b></div>';
+  }).join('');
+  setXP(xp);
+  updateAnswerLocks(solved);
+  return solved;
+}
+
+/* ---------- filters ---------- */
+const F = { level: 'all', topic: 'all', q: '', hide: false };
+$('#topicChips').innerHTML = '<button class="chip" data-topic="all" aria-pressed="true">All</button>' +
+  Object.keys(TOPICS).map(k => '<button class="chip" data-topic="' + k + '" aria-pressed="false">' + TOPICS[k] + '</button>').join('');
+function matches(q) {
+  if (F.level !== 'all' && q.level !== F.level) return false;
+  if (F.topic !== 'all' && !q.topics.includes(F.topic)) return false;
+  if (F.hide && S.solved[q.id]) return false;
+  if (F.q) {
+    const hay = (q.title + ' ' + q.statement + ' ' + q.uses.join(' ') + ' ' + q.topics.map(t => TOPICS[t]).join(' ')).toLowerCase();
+    if (!hay.includes(F.q)) return false;
+  }
+  return true;
+}
+function applyFilters(animate) {
+  let shown = 0;
+  $$('.q', list).forEach(card => {
+    const ok = matches(byId[card.dataset.id]);
+    card.hidden = !ok;
+    if (ok) { card.style.setProperty('--d', Math.min(shown, 8)); if (animate) replay(card, 'enter'); shown++; }
+  });
+  $('#count').textContent = 'Showing ' + shown + ' of ' + QUESTIONS.length;
+  $('#empty').hidden = shown > 0;
+}
+function chipGroup(sel, attr, key) {
+  $(sel).addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    $$('.chip', $(sel)).forEach(c => c.setAttribute('aria-pressed', String(c === b)));
+    F[key] = b.dataset[attr]; applyFilters(true);
+  });
+}
+chipGroup('#levelChips', 'level', 'level');
+chipGroup('#topicChips', 'topic', 'topic');
+$('#search').addEventListener('input', e => { F.q = e.target.value.trim().toLowerCase(); applyFilters(false); });
+$('#hideSolved').addEventListener('change', e => { F.hide = e.target.checked; applyFilters(true); });
+$('#clearFilters').addEventListener('click', () => {
+  F.level = 'all'; F.topic = 'all'; F.q = ''; F.hide = false;
+  $('#search').value = ''; $('#hideSolved').checked = false;
+  $$('#levelChips .chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.level === 'all')));
+  $$('#topicChips .chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.topic === 'all')));
+  applyFilters(true);
+});
+let armed = false;
+$('#resetBtn').addEventListener('click', e => {
+  const b = e.currentTarget;
+  if (!armed) { armed = true; b.textContent = 'Click again to clear all progress'; setTimeout(() => { armed = false; b.textContent = 'Reset progress'; }, 3000); return; }
+  armed = false; b.textContent = 'Reset progress';
+  S.solved = {}; S.quiz = {}; save();
+  $$('.q', list).forEach(syncCard); updateProgress(); toast('Progress cleared');
+});
+
+/* ---------- start ---------- */
+$$('.q', list).forEach(syncCard);
+initEditors();
+renderAnswers();
+updateProgress();
+applyFilters(true);
+})();
+</script>
+</body>
+</html>
